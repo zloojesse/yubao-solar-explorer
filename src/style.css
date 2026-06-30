@@ -1,0 +1,243 @@
+:root {
+    color-scheme: dark;
+    --cyan: #7de7ff;
+    --gold: #ffe48a;
+    --pink: #ff9bd2;
+    --panel: rgba(4, 12, 35, 0.72);
+    --panel-strong: rgba(2, 9, 28, 0.88);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; overflow: hidden; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", sans-serif;
+    background: #02030b;
+}
+canvas { display: block; }
+
+.mission-hud {
+    position: fixed;
+    top: 22px;
+    left: 24px;
+    width: min(480px, calc(100vw - 48px));
+    z-index: 5;
+    padding: 20px 22px;
+    border: 1px solid rgba(125, 231, 255, 0.42);
+    border-radius: 24px;
+    background: linear-gradient(135deg, rgba(6, 20, 54, 0.82), rgba(7, 9, 25, 0.56));
+    box-shadow: 0 0 40px rgba(62, 173, 255, 0.18), inset 0 0 26px rgba(125, 231, 255, 0.08);
+    backdrop-filter: blur(14px);
+    pointer-events: none;
+}
+.eyebrow {
+    margin: 0 0 6px;
+    color: var(--cyan);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 11px;
+}
+h1 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(25px, 3.4vw, 42px);
+    letter-spacing: 0.02em;
+    text-shadow: 0 0 24px rgba(125, 231, 255, 0.45);
+}
+.subtitle {
+    margin: 10px 0 0;
+    color: rgba(255,255,255,0.82);
+    line-height: 1.7;
+    font-size: 15px;
+}
+.mission-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+}
+.mission-legend span,
+.mission-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    color: #06101d;
+    background: linear-gradient(135deg, var(--cyan), #d7fbff);
+    font-size: 12px;
+    font-weight: 700;
+}
+.mission-chip.ai-chip {
+    color: #1b0820;
+    background: linear-gradient(135deg, var(--pink), var(--gold));
+    margin-left: 6px;
+}
+
+#gui-container {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 10;
+    opacity: 0.62;
+    transform: scale(0.86);
+    transform-origin: top right;
+}
+#gui-container:hover { opacity: 1; }
+
+.planet-dock {
+    position: fixed;
+    left: 50%;
+    bottom: 24px;
+    transform: translateX(-50%);
+    width: min(980px, calc(100vw - 34px));
+    z-index: 6;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 999px;
+    background: rgba(2, 8, 24, 0.72);
+    border: 1px solid rgba(255,255,255,0.16);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 18px 60px rgba(0,0,0,0.35);
+}
+.planet-dock button {
+    border: 1px solid rgba(125, 231, 255, 0.32);
+    color: white;
+    border-radius: 999px;
+    padding: 8px 13px;
+    background: rgba(21, 55, 95, 0.56);
+    cursor: pointer;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+.planet-dock button:hover {
+    transform: translateY(-2px);
+    background: rgba(125, 231, 255, 0.28);
+    box-shadow: 0 0 24px rgba(125, 231, 255, 0.28);
+}
+.planet-dock .ghost {
+    border-color: rgba(255, 228, 138, 0.48);
+    background: rgba(255, 228, 138, 0.16);
+}
+
+.ai-card {
+    position: fixed;
+    right: 24px;
+    bottom: 104px;
+    z-index: 5;
+    width: 270px;
+    padding: 16px 18px;
+    color: white;
+    border-radius: 22px;
+    background: rgba(4, 12, 35, 0.66);
+    border: 1px solid rgba(255, 155, 210, 0.25);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 34px rgba(255, 155, 210, 0.13);
+}
+.ai-card strong { color: var(--gold); }
+.ai-card ol { margin: 10px 0 0; padding-left: 20px; line-height: 1.8; color: rgba(255,255,255,0.82); }
+
+.planet-info {
+    display: none;
+    position: fixed;
+    left: 24px;
+    top: 230px;
+    width: min(430px, calc(100vw - 48px));
+    max-height: calc(100vh - 330px);
+    z-index: 8;
+}
+.planet-info-content {
+    position: relative;
+    background: var(--panel-strong);
+    padding: 22px;
+    border-radius: 26px;
+    border: 1px solid rgba(255, 228, 138, 0.44);
+    box-shadow: 0 0 34px rgba(255,228,138,0.22), inset 0 0 32px rgba(125, 231, 255, 0.06);
+    color: white;
+    overflow-y: auto;
+    max-height: inherit;
+    backdrop-filter: blur(16px);
+}
+.close-btn {
+    position: absolute;
+    right: 18px;
+    top: 12px;
+    color: var(--gold);
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+h2 {
+    margin: 0 36px 14px 0;
+    color: var(--gold);
+    font-size: 30px;
+}
+#planetDetails { color: white; line-height: 1.6; }
+.fact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 16px 0;
+}
+.fact-grid div {
+    padding: 10px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+dt { color: var(--cyan); font-size: 12px; margin-bottom: 3px; }
+dd { margin: 0; font-weight: 700; font-size: 13px; }
+.planet-story {
+    margin: 14px 0 0;
+    color: rgba(255,255,255,0.9);
+    font-size: 16px;
+}
+.guide-note {
+    margin: 14px 0 0;
+    padding: 12px 14px;
+    border-left: 4px solid var(--pink);
+    border-radius: 14px;
+    background: rgba(255,155,210,0.12);
+    color: #ffe7f4;
+}
+.credit {
+    position: fixed;
+    right: 16px;
+    bottom: 8px;
+    z-index: 4;
+    color: rgba(255,255,255,0.42);
+    font-size: 11px;
+}
+.warp-lines {
+    pointer-events: none;
+    position: fixed;
+    inset: -20%;
+    z-index: 3;
+    opacity: 0;
+    background:
+        radial-gradient(circle at center, transparent 0 18%, rgba(125,231,255,.25) 19%, transparent 21%),
+        repeating-conic-gradient(from 0deg, transparent 0deg 8deg, rgba(125,231,255,.22) 9deg, transparent 10deg 18deg);
+    transform: scale(0.2);
+    transition: opacity .25s ease;
+    mix-blend-mode: screen;
+}
+body.is-warping .warp-lines {
+    opacity: .38;
+    animation: warp 900ms ease-in-out infinite;
+}
+@keyframes warp {
+    from { transform: scale(0.15) rotate(0deg); filter: blur(1px); }
+    to { transform: scale(1.25) rotate(20deg); filter: blur(0px); }
+}
+
+@media (max-width: 860px) {
+    .mission-hud { top: 12px; left: 12px; padding: 15px; }
+    .subtitle, .ai-card, .credit { display: none; }
+    .planet-info { top: 138px; left: 12px; width: calc(100vw - 24px); max-height: calc(100vh - 245px); }
+    .planet-dock { bottom: 12px; border-radius: 24px; justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; }
+    #gui-container { display: none; }
+    .fact-grid { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "yubao-solar-explorer",
+  "private": false,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "魚寶的 3D 太陽系小探險：基於 Three.js 的繁中互動太陽系與 AI 分身養成導覽。",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "devDependencies": {
+    "vite": "^7.3.2"
+  },
+  "dependencies": {
+    "dat.gui": "^0.7.9",
+    "postprocessing": "^7.0.0-alpha-1",
+    "three": "^0.160.0"
+  }
+}

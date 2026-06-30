@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>魚寶的 3D 太陽系小探險</title>
+    <meta name="description" content="結合 3D 太陽系、星球小知識與 AI 分身養成概念的互動探索網站。">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="warp-lines" aria-hidden="true"></div>
+
+    <header class="mission-hud">
+        <p class="eyebrow">Yubao Solar Explorer × AI Twin Journey</p>
+        <h1>魚寶的 3D 太陽系小探險</h1>
+        <p class="subtitle">點一顆星球，Iris 會帶你飛過去；左側會出現星球小知識，也把「AI 分身養成」的四層概念藏進旅程裡。</p>
+        <div class="mission-legend">
+            <span>🛰 點星球飛行</span>
+            <span>✨ Hover 會發光</span>
+            <span>🧠 星球 × AI 化任務</span>
+        </div>
+    </header>
+
+    <nav class="planet-dock" aria-label="快速選擇星球">
+        <button onclick="flyToPlanetByName('Mercury')">水星</button>
+        <button onclick="flyToPlanetByName('Venus')">金星</button>
+        <button onclick="flyToPlanetByName('Earth')">地球</button>
+        <button onclick="flyToPlanetByName('Mars')">火星</button>
+        <button onclick="flyToPlanetByName('Jupiter')">木星</button>
+        <button onclick="flyToPlanetByName('Saturn')">土星</button>
+        <button onclick="flyToPlanetByName('Uranus')">天王星</button>
+        <button onclick="flyToPlanetByName('Neptune')">海王星</button>
+        <button onclick="flyToPlanetByName('Pluto')">冥王星</button>
+        <button class="ghost" onclick="resetExplorerView()">回到全景</button>
+    </nav>
+
+    <aside class="ai-card">
+        <strong>今天的隱藏主線</strong>
+        <ol>
+            <li>數位化：留下紀錄</li>
+            <li>雲端化：讓資料可用</li>
+            <li>自動化：讓流程會跑</li>
+            <li>AI 化：讓分身能工作</li>
+        </ol>
+    </aside>
+
+    <div id="gui-container"></div>
+    <script type="module" src="./script.js"></script>
+
+    <div id="planetInfo" class="planet-info">
+        <div class="planet-info-content">
+            <span class="close-btn" onclick="closeInfo()">&times;</span>
+            <h2 id="planetName"></h2>
+            <div id="planetDetails"></div>
+        </div>
+    </div>
+
+    <footer class="credit">Based on N3rson/Solar-System-3D · MIT License · Customized for 信宏 / 魚寶</footer>
+</body>
+</html>
