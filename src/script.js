@@ -40,6 +40,8 @@ import phobosModelUrl from './images/mars/phobos.glb?url';
 import deimosModelUrl from './images/mars/deimos.glb?url';
 
 // ******  SETUP  ******
+window.addEventListener('DOMContentLoaded', () => renderTrivia('Earth'));
+
 console.log("Create the scene");
 const scene = new THREE.Scene();
 
@@ -203,17 +205,67 @@ const zhNameMap = {
   Saturn: '土星', Uranus: '天王星', Neptune: '海王星', Pluto: '冥王星'
 };
 
-const aiStageMap = {
-  Mercury: '數位化：把觀察留下紀錄',
-  Venus: '雲端化：讓資料可以被取用',
-  Earth: '自動化：讓固定流程開始自己跑',
-  Mars: 'AI 化：讓分身整理、判斷、產出',
-  Jupiter: '工作分身：把任務拆成固定輸入與輸出',
-  Saturn: '記憶：讓分身記得你的偏好與標準',
-  Uranus: '思維：寫下你的分類、判斷與邊界',
-  Neptune: '回饋：用每一次修正把分身養得更像你',
-  Pluto: '探索精神：小小星球也有自己的故事'
+const planetTrivia = {
+  Mercury: [
+    { q: '水星離太陽最近，它是不是太陽系最熱的行星？', a: '不是喔！最熱的是金星，因為金星有很厚的大氣把熱留住。' },
+    { q: '水星有自己的衛星嗎？', a: '沒有，水星沒有衛星。' }
+  ],
+  Venus: [
+    { q: '金星為什麼像包著厚棉被？', a: '因為它有非常厚的大氣，會把熱困在星球表面。' },
+    { q: '金星自轉快還是公轉快？', a: '很特別：金星自轉一圈比繞太陽一圈還久。' }
+  ],
+  Earth: [
+    { q: '為什麼地球會有白天和黑夜？', a: '因為地球會自轉，面向太陽的一邊是白天，背對太陽的一邊是夜晚。' },
+    { q: '地球唯一的天然衛星叫什麼？', a: '月球。它會繞著地球轉。' }
+  ],
+  Mars: [
+    { q: '火星為什麼看起來紅紅的？', a: '因為表面有很多含鐵的礦物，像生鏽一樣呈現紅色。' },
+    { q: '火星有幾顆衛星？', a: '有 2 顆，叫火衛一和火衛二。' }
+  ],
+  Jupiter: [
+    { q: '木星身上的大紅斑是什麼？', a: '那是一個超巨大的風暴，而且已經持續很久很久了。' },
+    { q: '木星是太陽系最大的行星嗎？', a: '是的，木星是太陽系最大的行星。' }
+  ],
+  Saturn: [
+    { q: '土星光環是一整片硬硬的圓盤嗎？', a: '不是喔！光環是由很多冰塊、石頭和塵埃組成的。' },
+    { q: '土星最容易被認出來的特色是什麼？', a: '漂亮又明顯的光環。' }
+  ],
+  Uranus: [
+    { q: '天王星為什麼很特別？', a: '它幾乎是躺著自轉，像在太空中側躺翻滾。' },
+    { q: '天王星的淡藍色主要跟什麼有關？', a: '跟大氣裡的甲烷有關。' }
+  ],
+  Neptune: [
+    { q: '海王星離太陽很遠，所以它大概是什麼感覺？', a: '非常寒冷，而且風速很快，是神祕的藍色星球。' },
+    { q: '海王星繞太陽一圈大約要多久？', a: '大約 165 個地球年。' }
+  ],
+  Pluto: [
+    { q: '冥王星現在還算八大行星之一嗎？', a: '不算了，現在被分類為矮行星。' },
+    { q: '冥王星小小又很遠，還值得認識嗎？', a: '值得！它提醒我們太陽系邊緣還有很多未知世界。' }
+  ]
 };
+let activeTriviaPlanet = 'Earth';
+let activeTriviaIndex = 0;
+
+function renderTrivia(planet = activeTriviaPlanet, advance = false) {
+  const list = planetTrivia[planet] || planetTrivia.Earth;
+  activeTriviaPlanet = planet;
+  if (advance) activeTriviaIndex = (activeTriviaIndex + 1) % list.length;
+  else activeTriviaIndex = activeTriviaIndex % list.length;
+  const item = list[activeTriviaIndex];
+  const q = document.getElementById('triviaQuestion');
+  const a = document.getElementById('triviaAnswer');
+  if (q) q.innerText = `${zhNameMap[planet] || '地球'}問題：${item.q}`;
+  if (a) a.innerText = '';
+}
+function showTriviaAnswer() {
+  const list = planetTrivia[activeTriviaPlanet] || planetTrivia.Earth;
+  const item = list[activeTriviaIndex];
+  const a = document.getElementById('triviaAnswer');
+  if (a) a.innerText = item.a;
+}
+function nextTrivia() { renderTrivia(activeTriviaPlanet, true); }
+window.showTriviaAnswer = showTriviaAnswer;
+window.nextTrivia = nextTrivia;
 
 function getPlanetByName(name) {
   return { Mercury: mercury, Venus: venus, Earth: earth, Mars: mars, Jupiter: jupiter, Saturn: saturn, Uranus: uranus, Neptune: neptune, Pluto: pluto }[name];
@@ -253,7 +305,7 @@ function showPlanetInfo(planet) {
   name.innerText = `${zhNameMap[planet] || planet} ${data.emoji || ''}`;
   details.innerHTML = `
     <span class="mission-chip">魚寶太空探險</span>
-    <span class="mission-chip ai-chip">${aiStageMap[planet] || 'AI 分身養成'}</span>
+    <span class="mission-chip fact-chip">${data.badge || '太陽系小知識'}</span>
     <dl class="fact-grid">
       <div><dt>半徑</dt><dd>${data.radius}</dd></div>
       <div><dt>自轉</dt><dd>${data.rotation}</dd></div>
@@ -263,10 +315,11 @@ function showPlanetInfo(planet) {
       <div><dt>傾斜</dt><dd>${data.tilt}</dd></div>
     </dl>
     <p class="planet-story">${data.info}</p>
-    <p class="guide-note">小任務：看完這顆星球後，試著用一句話告訴 Iris：它最特別的是什麼？</p>
+    <p class="guide-note">小任務：看完這顆星球後，按右邊「看答案」挑戰一題太空小問答！</p>
   `;
 
   info.style.display = 'block';
+  renderTrivia(planet);
   document.body.classList.remove('is-warping');
 }
 let isZoomingOut = false;
@@ -592,6 +645,7 @@ const pluto = new createPlanet('Pluto', 1, 350, 57, plutoTexture)
   // ******  PLANETS DATA  ******
   const planetData = {
     'Mercury': {
+        badge: '離太陽最近',
         emoji: '☿',
         radius: '2,439.7 km',
         tilt: '0.034°',
@@ -602,6 +656,7 @@ const pluto = new createPlanet('Pluto', 1, 350, 57, plutoTexture)
         info: '水星是離太陽最近、也是最小的行星。白天很熱、夜晚很冷，像一顆勇敢靠近太陽的小石頭。'
     },
     'Venus': {
+        badge: '最熱的行星',
         emoji: '♀',
         radius: '6,051.8 km',
         tilt: '177.4°',
@@ -612,6 +667,7 @@ const pluto = new createPlanet('Pluto', 1, 350, 57, plutoTexture)
         info: '金星有厚厚的大氣，就像包著棉被的星球，所以表面非常炎熱。它也是夜空中很亮的「明星」。'
     },
     'Earth': {
+        badge: '我們的家',
         emoji: '🌍',
         radius: '6,371 km',
         tilt: '23.5°',
@@ -622,6 +678,7 @@ const pluto = new createPlanet('Pluto', 1, 350, 57, plutoTexture)
         info: '地球是我們的家，有海洋、空氣和生命。也因為地球每天自轉，我們才會看到白天和黑夜。'
     },
     'Mars': {
+        badge: '紅色星球',
         emoji: '♂',
         radius: '3,389.5 km',
         tilt: '25.19°',
@@ -632,6 +689,7 @@ const pluto = new createPlanet('Pluto', 1, 350, 57, plutoTexture)
         info: '火星因為表面含有氧化鐵，看起來紅紅的，所以被叫做紅色星球。人類很想有一天去火星探險。'
     },
     'Jupiter': {
+        badge: '最大行星',
         emoji: '♃',
         radius: '69,911 km',
         tilt: '3.13°',
@@ -642,6 +700,7 @@ const pluto = new createPlanet('Pluto', 1, 350, 57, plutoTexture)
         info: '木星是太陽系最大的行星，像一位巨人。它身上的大紅斑，其實是一個已經吹了很久很久的巨大風暴。'
     },
     'Saturn': {
+        badge: '光環明星',
         emoji: '♄',
         radius: '58,232 km',
         tilt: '26.73°',
@@ -652,6 +711,7 @@ const pluto = new createPlanet('Pluto', 1, 350, 57, plutoTexture)
         info: '土星最有名的是漂亮的光環。那些光環不是一整片，而是由冰塊、石頭和塵埃組成。'
     },
     'Uranus': {
+        badge: '側躺自轉',
         emoji: '♅',
         radius: '25,362 km',
         tilt: '97.77°',
@@ -662,6 +722,7 @@ const pluto = new createPlanet('Pluto', 1, 350, 57, plutoTexture)
         info: '天王星很特別，幾乎是「躺著」自轉。它淡藍色的外表，來自大氣裡的甲烷。'
     },
     'Neptune': {
+        badge: '藍色遠方',
         emoji: '♆',
         radius: '24,622 km',
         tilt: '28.32°',
@@ -672,6 +733,7 @@ const pluto = new createPlanet('Pluto', 1, 350, 57, plutoTexture)
         info: '海王星離太陽很遠，顏色深藍，風速非常快，是太陽系裡很有神祕感的藍色星球。'
     },
     'Pluto': {
+        badge: '矮行星',
         emoji: '♇',
         radius: '1,188.3 km',
         tilt: '122.53°',

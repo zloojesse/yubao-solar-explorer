@@ -19,9 +19,9 @@ canvas { display: block; }
     position: fixed;
     top: 22px;
     left: 24px;
-    width: min(480px, calc(100vw - 48px));
+    width: min(430px, calc(100vw - 48px));
     z-index: 5;
-    padding: 20px 22px;
+    padding: 18px 20px;
     border: 1px solid rgba(125, 231, 255, 0.42);
     border-radius: 24px;
     background: linear-gradient(135deg, rgba(6, 20, 54, 0.82), rgba(7, 9, 25, 0.56));
@@ -39,7 +39,7 @@ canvas { display: block; }
 h1 {
     margin: 0;
     color: #fff;
-    font-size: clamp(25px, 3.4vw, 42px);
+    font-size: clamp(24px, 3vw, 36px);
     letter-spacing: 0.02em;
     text-shadow: 0 0 24px rgba(125, 231, 255, 0.45);
 }
@@ -47,7 +47,7 @@ h1 {
     margin: 10px 0 0;
     color: rgba(255,255,255,0.82);
     line-height: 1.7;
-    font-size: 15px;
+    font-size: 14px;
 }
 .mission-legend {
     display: flex;
@@ -67,7 +67,7 @@ h1 {
     font-size: 12px;
     font-weight: 700;
 }
-.mission-chip.ai-chip {
+.mission-chip.fact-chip {
     color: #1b0820;
     background: linear-gradient(135deg, var(--pink), var(--gold));
     margin-left: 6px;
@@ -75,8 +75,9 @@ h1 {
 
 #gui-container {
     position: fixed;
-    top: 18px;
+    top: auto;
     right: 18px;
+    bottom: 100px;
     z-index: 10;
     opacity: 0.62;
     transform: scale(0.86);
@@ -123,30 +124,44 @@ h1 {
     background: rgba(255, 228, 138, 0.16);
 }
 
-.ai-card {
+.trivia-card {
     position: fixed;
     right: 24px;
-    bottom: 104px;
+    top: 22px;
     z-index: 5;
-    width: 270px;
-    padding: 16px 18px;
+    width: min(340px, calc(100vw - 48px));
+    padding: 18px 20px;
     color: white;
     border-radius: 22px;
     background: rgba(4, 12, 35, 0.66);
-    border: 1px solid rgba(255, 155, 210, 0.25);
+    border: 1px solid rgba(255, 228, 138, 0.34);
     backdrop-filter: blur(12px);
-    box-shadow: 0 0 34px rgba(255, 155, 210, 0.13);
+    box-shadow: 0 0 34px rgba(255, 228, 138, 0.13);
 }
-.ai-card strong { color: var(--gold); }
-.ai-card ol { margin: 10px 0 0; padding-left: 20px; line-height: 1.8; color: rgba(255,255,255,0.82); }
+.trivia-card .card-label { margin: 0 0 6px; color: var(--cyan); font-size: 12px; letter-spacing: .12em; }
+.trivia-card h2 { margin: 0 0 10px; font-size: 24px; color: var(--gold); }
+.trivia-card p { margin: 0; color: rgba(255,255,255,.86); line-height: 1.65; }
+.trivia-actions { display: flex; gap: 8px; margin-top: 14px; }
+.trivia-actions button {
+    border: 1px solid rgba(125, 231, 255, 0.34);
+    color: white;
+    border-radius: 999px;
+    padding: 8px 12px;
+    background: rgba(21, 55, 95, 0.68);
+    cursor: pointer;
+    font-weight: 800;
+}
+.trivia-actions button:hover { background: rgba(125, 231, 255, 0.28); }
+.trivia-actions .ghost { border-color: rgba(255, 228, 138, 0.42); background: rgba(255, 228, 138, 0.15); }
+.trivia-answer { margin-top: 12px !important; color: #fff1b8 !important; font-weight: 800; }
 
 .planet-info {
     display: none;
     position: fixed;
     left: 24px;
-    top: 230px;
-    width: min(430px, calc(100vw - 48px));
-    max-height: calc(100vh - 330px);
+    top: 245px;
+    width: min(430px, calc(50vw - 38px));
+    max-height: calc(100vh - 345px);
     z-index: 8;
 }
 .planet-info-content {
@@ -233,9 +248,17 @@ body.is-warping .warp-lines {
     to { transform: scale(1.25) rotate(20deg); filter: blur(0px); }
 }
 
+
+@media (min-width: 861px) and (max-width: 1180px) {
+    .mission-hud { width: 360px; }
+    .trivia-card { width: 300px; }
+    .subtitle { display: none; }
+    .planet-info { top: 185px; width: 360px; max-height: calc(100vh - 285px); }
+}
+
 @media (max-width: 860px) {
     .mission-hud { top: 12px; left: 12px; padding: 15px; }
-    .subtitle, .ai-card, .credit { display: none; }
+    .subtitle, .trivia-card, .credit { display: none; }
     .planet-info { top: 138px; left: 12px; width: calc(100vw - 24px); max-height: calc(100vh - 245px); }
     .planet-dock { bottom: 12px; border-radius: 24px; justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; }
     #gui-container { display: none; }

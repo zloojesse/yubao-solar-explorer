@@ -4,22 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>魚寶的 3D 太陽系小探險</title>
-    <meta name="description" content="結合 3D 太陽系、星球小知識與 AI 分身養成概念的互動探索網站。">
+    <meta name="description" content="給魚寶玩的 3D 太陽系互動探索網站：點星球、飛過去、看繁體中文小知識。">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="warp-lines" aria-hidden="true"></div>
 
     <header class="mission-hud">
-        <p class="eyebrow">Yubao Solar Explorer × AI Twin Journey</p>
+        <p class="eyebrow">Yubao Solar Explorer</p>
         <h1>魚寶的 3D 太陽系小探險</h1>
-        <p class="subtitle">點一顆星球，Iris 會帶你飛過去；左側會出現星球小知識，也把「AI 分身養成」的四層概念藏進旅程裡。</p>
+        <p class="subtitle">點一顆星球，Iris 會帶你飛過去；抵達後可以看星球小知識，也可以挑戰右邊的太空小問答。</p>
         <div class="mission-legend">
             <span>🛰 點星球飛行</span>
-            <span>✨ Hover 會發光</span>
-            <span>🧠 星球 × AI 化任務</span>
+            <span>✨ 滑過星球會發光</span>
+            <span>🌟 看小知識</span>
+            <span>🧩 玩小問答</span>
         </div>
     </header>
+
+    <aside class="trivia-card" id="triviaCard">
+        <p class="card-label">互動小知識</p>
+        <h2>太空小問答</h2>
+        <p id="triviaQuestion">先點一顆星球，這裡會出現跟它有關的小問題。</p>
+        <div class="trivia-actions">
+            <button onclick="showTriviaAnswer()">看答案</button>
+            <button class="ghost" onclick="nextTrivia()">換一題</button>
+        </div>
+        <p id="triviaAnswer" class="trivia-answer" aria-live="polite"></p>
+    </aside>
 
     <nav class="planet-dock" aria-label="快速選擇星球">
         <button onclick="flyToPlanetByName('Mercury')">水星</button>
@@ -33,16 +45,6 @@
         <button onclick="flyToPlanetByName('Pluto')">冥王星</button>
         <button class="ghost" onclick="resetExplorerView()">回到全景</button>
     </nav>
-
-    <aside class="ai-card">
-        <strong>今天的隱藏主線</strong>
-        <ol>
-            <li>數位化：留下紀錄</li>
-            <li>雲端化：讓資料可用</li>
-            <li>自動化：讓流程會跑</li>
-            <li>AI 化：讓分身能工作</li>
-        </ol>
-    </aside>
 
     <div id="gui-container"></div>
     <script type="module" src="./script.js"></script>

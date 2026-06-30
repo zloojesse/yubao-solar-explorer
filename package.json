@@ -3,7 +3,7 @@
   "private": false,
   "version": "0.1.0",
   "type": "module",
-  "description": "魚寶的 3D 太陽系小探險：基於 Three.js 的繁中互動太陽系與 AI 分身養成導覽。",
+  "description": "魚寶的 3D 太陽系小探險：基於 Three.js 的繁中互動太陽系與小知識問答。",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
