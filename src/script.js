@@ -139,7 +139,11 @@ function onMouseMove(event) {
 
 // ******  SELECT PLANET  ******
 let selectedPlanet = null;
+let celestialMap = {};
+const selectableOffsets = { Mercury: 10, Venus: 25, Earth: 25, Mars: 15, Ceres: 12, Jupiter: 50, Saturn: 50, Uranus: 25, Neptune: 20, Pluto: 10, Haumea: 12, Makemake: 12, Eris: 12, CometHalley: 16 };
+const animatedSmallBodies = [];
 let isMovingTowardsPlanet = false;
+let focusFallbackTimer = null;
 let targetCameraPosition = new THREE.Vector3();
 let offset;
 
@@ -201,15 +205,23 @@ function identifyPlanet(clickedObject) {
         } else if (clickedObject.material === pluto.planet.material) {
           offset = 10;
           return pluto;
-        } 
+        }
+
+  for (const body of Object.values(celestialMap)) {
+    if (clickedObject === body.planet || clickedObject.material === body.planet.material) {
+      offset = selectableOffsets[body.name] || 18;
+      return body;
+    }
+  }
 
   return null;
 }
 
 
 const zhNameMap = {
-  Mercury: '水星', Venus: '金星', Earth: '地球', Mars: '火星', Jupiter: '木星',
-  Saturn: '土星', Uranus: '天王星', Neptune: '海王星', Pluto: '冥王星'
+  Mercury: '水星', Venus: '金星', Earth: '地球', Mars: '火星', Ceres: '穀神星', Jupiter: '木星',
+  Saturn: '土星', Uranus: '天王星', Neptune: '海王星', Pluto: '冥王星',
+  Haumea: '妊神星', Makemake: '鳥神星', Eris: '鬩神星', CometHalley: '哈雷彗星'
 };
 
 const planetTrivia = {
@@ -248,6 +260,26 @@ const planetTrivia = {
   Pluto: [
     { q: '冥王星現在還算八大行星之一嗎？', a: '不算了，現在被分類為矮行星。' },
     { q: '冥王星小小又很遠，還值得認識嗎？', a: '值得！它提醒我們太陽系邊緣還有很多未知世界。' }
+  ],
+  Ceres: [
+    { q: '穀神星住在哪裡？', a: '穀神星在火星和木星之間的小行星帶，是小行星帶裡最大的天體。' },
+    { q: '穀神星是行星嗎？', a: '它不是八大行星，現在被分類為矮行星。' }
+  ],
+  Haumea: [
+    { q: '妊神星為什麼很特別？', a: '它自轉很快，形狀像被拉長的橄欖球。' },
+    { q: '妊神星在哪一區？', a: '它在海王星外側的柯伊伯帶附近。' }
+  ],
+  Makemake: [
+    { q: '鳥神星離太陽近還是遠？', a: '很遠喔！它也在海王星外側，是冰冷的小世界。' },
+    { q: '鳥神星是什麼種類？', a: '它是矮行星。' }
+  ],
+  Eris: [
+    { q: '鬩神星為什麼有名？', a: '它的發現讓科學家重新討論「什麼才算行星」，也讓冥王星改分類。' },
+    { q: '鬩神星比冥王星近還是遠？', a: '通常更遠，是太陽系外圍非常遙遠的矮行星。' }
+  ],
+  CometHalley: [
+    { q: '哈雷彗星多久會回來一次？', a: '大約每 76 年會接近太陽一次。' },
+    { q: '彗星尾巴一定在後面嗎？', a: '彗星尾巴通常會被太陽風吹向遠離太陽的方向，不一定跟飛行方向相反。' }
   ]
 };
 let activeTriviaPlanet = 'Earth';
@@ -275,7 +307,7 @@ window.showTriviaAnswer = showTriviaAnswer;
 window.nextTrivia = nextTrivia;
 
 function getPlanetByName(name) {
-  return { Mercury: mercury, Venus: venus, Earth: earth, Mars: mars, Jupiter: jupiter, Saturn: saturn, Uranus: uranus, Neptune: neptune, Pluto: pluto }[name];
+  return celestialMap[name];
 }
 
 function flyToPlanetByName(name) {
@@ -288,11 +320,17 @@ function flyToPlanetByName(name) {
   selectedPlanet.planet.getWorldPosition(planetPosition);
   controls.target.copy(planetPosition);
   camera.lookAt(planetPosition);
-  const offsetMap = { Mercury: 10, Venus: 25, Earth: 25, Mars: 15, Jupiter: 50, Saturn: 50, Uranus: 25, Neptune: 20, Pluto: 10 };
-  offset = offsetMap[name] || 20;
+  offset = selectableOffsets[name] || 20;
   targetCameraPosition.copy(planetPosition).add(camera.position.clone().sub(planetPosition).normalize().multiplyScalar(offset));
   isMovingTowardsPlanet = true;
   document.body.classList.add('is-warping');
+  clearTimeout(focusFallbackTimer);
+  focusFallbackTimer = setTimeout(() => {
+    if (selectedPlanet === planet && isMovingTowardsPlanet) {
+      isMovingTowardsPlanet = false;
+      showPlanetInfo(name);
+    }
+  }, 2600);
 }
 window.flyToPlanetByName = flyToPlanetByName;
 
@@ -473,6 +511,34 @@ function createPlanet(planetName, size, position, tilt, texture, bump, ring, atm
 }
 
 
+
+function createSmallBody(name, size, position, color, orbitOpacity = 0.08, tail = false) {
+  const material = new THREE.MeshStandardMaterial({
+    color,
+    roughness: 0.72,
+    metalness: 0.05,
+    emissive: color,
+    emissiveIntensity: tail ? 0.22 : 0.05
+  });
+  const body = createPlanet(name, size, position, 0, material);
+  body.planet.userData.name = name;
+  body.planetSystem.children.forEach(child => {
+    if (child.type === 'LineLoop' && child.material) child.material.opacity = orbitOpacity;
+  });
+  if (tail) {
+    const tailGeometry = new THREE.ConeGeometry(size * 0.85, size * 6.5, 18, 1, true);
+    const tailMaterial = new THREE.MeshBasicMaterial({ color: 0x9fe9ff, transparent: true, opacity: 0.45, side: THREE.DoubleSide });
+    const tailMesh = new THREE.Mesh(tailGeometry, tailMaterial);
+    tailMesh.rotation.z = Math.PI / 2;
+    tailMesh.position.x = position + size * 4.2;
+    tailMesh.position.y = size * 0.15;
+    body.planetSystem.add(tailMesh);
+    body.tail = tailMesh;
+  }
+  animatedSmallBodies.push(body);
+  return body;
+}
+
 // ******  LOADING OBJECTS METHOD  ******
 function loadObject(path, position, scale, callback) {
   const loader = new GLTFLoader();
@@ -648,6 +714,15 @@ const uranus = new createPlanet('Uranus', 25/4, 320, 82, uranusTexture, null, {
 });
 const neptune = new createPlanet('Neptune', 24/4, 340, 28, neptuneTexture);
 const pluto = new createPlanet('Pluto', 1, 350, 57, plutoTexture)
+const ceres = createSmallBody('Ceres', 1.15, 150, 0xb9aa8f, 0.14);
+const haumea = createSmallBody('Haumea', 1.05, 378, 0xd8d2c8, 0.06);
+haumea.planet.scale.set(1.75, 0.75, 0.75);
+const makemake = createSmallBody('Makemake', 1.2, 392, 0xb77a5a, 0.06);
+const eris = createSmallBody('Eris', 1.25, 415, 0xdfe9f2, 0.06);
+const cometHalley = createSmallBody('CometHalley', 0.85, 125, 0x8fdcff, 0.18, true);
+cometHalley.planet3d.rotation.z = 0.28;
+
+celestialMap = { Mercury: mercury, Venus: venus, Earth: earth, Mars: mars, Ceres: ceres, Jupiter: jupiter, Saturn: saturn, Uranus: uranus, Neptune: neptune, Pluto: pluto, Haumea: haumea, Makemake: makemake, Eris: eris, CometHalley: cometHalley };
 
   // ******  PLANETS DATA  ******
   const planetData = {
@@ -749,14 +824,70 @@ const pluto = new createPlanet('Pluto', 1, 350, 57, plutoTexture)
         distance: '約 59 億公里',
         moons: '5 顆',
         info: '冥王星現在被分類為矮行星。雖然它小小的、很遠，但它提醒我們：宇宙裡還有很多值得探索的地方。'
+    },
+    'Ceres': {
+        badge: '小行星帶最大成員',
+        emoji: '⚪',
+        radius: '約 470 km',
+        tilt: '約 4°',
+        rotation: '約 9 小時',
+        orbit: '約 4.6 個地球年',
+        distance: '約 4.1 億公里',
+        moons: '0 顆',
+        info: '穀神星在火星和木星之間的小行星帶，是小行星帶中最大的天體，也是離我們很近的一顆矮行星。'
+    },
+    'Haumea': {
+        badge: '轉很快的橄欖球',
+        emoji: '🥚',
+        radius: '約 816 km',
+        tilt: '約 126°',
+        rotation: '約 3.9 小時',
+        orbit: '約 285 個地球年',
+        distance: '約 64 億公里',
+        moons: '2 顆',
+        info: '妊神星自轉非常快，形狀被拉得像橄欖球，還有淡淡的光環，是太陽系外圍很有個性的矮行星。'
+    },
+    'Makemake': {
+        badge: '冰冷紅色小世界',
+        emoji: '🟤',
+        radius: '約 715 km',
+        tilt: '約 29°',
+        rotation: '約 22.8 小時',
+        orbit: '約 306 個地球年',
+        distance: '約 68 億公里',
+        moons: '1 顆',
+        info: '鳥神星位在海王星外側，表面可能有冰和有機物，顏色偏紅，是柯伊伯帶裡重要的矮行星。'
+    },
+    'Eris': {
+        badge: '改變行星定義',
+        emoji: '❄️',
+        radius: '約 1,163 km',
+        tilt: '約 44°',
+        rotation: '約 25.9 小時',
+        orbit: '約 559 個地球年',
+        distance: '非常遙遠，軌道很長',
+        moons: '1 顆',
+        info: '鬩神星和冥王星差不多大，它的發現讓科學家重新討論行星定義，也讓矮行星這個分類更受注意。'
+    },
+    'CometHalley': {
+        badge: '會回來的彗星',
+        emoji: '☄️',
+        radius: '核心約 5.5 km',
+        tilt: '約 162°',
+        rotation: '約 2.2 個地球日',
+        orbit: '約 76 個地球年',
+        distance: '軌道很長，會接近也會遠離太陽',
+        moons: '0 顆',
+        info: '哈雷彗星是最有名的週期彗星之一，大約每 76 年回到太陽附近一次。靠近太陽時，冰和塵埃被吹出來，就會看到漂亮的彗尾。'
     }
 };
 
 
 // Array of planets and atmospheres for raycasting
 const raycastTargets = [
-  mercury.planet, venus.planet, venus.Atmosphere, earth.planet, earth.Atmosphere, 
-  mars.planet, jupiter.planet, saturn.planet, uranus.planet, neptune.planet, pluto.planet
+  mercury.planet, venus.planet, venus.Atmosphere, earth.planet, earth.Atmosphere,
+  mars.planet, ceres.planet, jupiter.planet, saturn.planet, uranus.planet, neptune.planet,
+  pluto.planet, haumea.planet, makemake.planet, eris.planet, cometHalley.planet
 ];
 
 // ******  SHADOWS  ******
@@ -797,6 +928,10 @@ saturn.Ring.receiveShadow = true;
 uranus.planet.receiveShadow = true;
 neptune.planet.receiveShadow = true;
 pluto.planet.receiveShadow = true;
+animatedSmallBodies.forEach(body => {
+  body.planet.castShadow = true;
+  body.planet.receiveShadow = true;
+});
 
 
 
@@ -825,6 +960,16 @@ function animate(){
   neptune.planet3d.rotateY(0.00008 * settings.accelerationOrbit);
   pluto.planet.rotateY(0.001 * settings.acceleration)
   pluto.planet3d.rotateY(0.00006 * settings.accelerationOrbit)
+  ceres.planet.rotateY(0.004 * settings.acceleration);
+  ceres.planet3d.rotateY(0.00095 * settings.accelerationOrbit);
+  haumea.planet.rotateY(0.012 * settings.acceleration);
+  haumea.planet3d.rotateY(0.00005 * settings.accelerationOrbit);
+  makemake.planet.rotateY(0.003 * settings.acceleration);
+  makemake.planet3d.rotateY(0.000045 * settings.accelerationOrbit);
+  eris.planet.rotateY(0.002 * settings.acceleration);
+  eris.planet3d.rotateY(0.000035 * settings.accelerationOrbit);
+  cometHalley.planet.rotateY(0.006 * settings.acceleration);
+  cometHalley.planet3d.rotateY(0.0016 * settings.accelerationOrbit);
 
 // Animate Earth's moon
 if (earth.moons) {

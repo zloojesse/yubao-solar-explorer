@@ -105,11 +105,13 @@ h1 {
     width: min(980px, calc(100vw - 34px));
     z-index: 6;
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
     gap: 8px;
     padding: 12px;
     border-radius: 999px;
+    overflow-x: auto;
+    scrollbar-width: thin;
     background: rgba(2, 8, 24, 0.72);
     border: 1px solid rgba(255,255,255,0.16);
     backdrop-filter: blur(14px);
