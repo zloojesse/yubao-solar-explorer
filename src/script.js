@@ -35,6 +35,9 @@ import uranusTexture from '/images/uranus.jpg';
 import uraRingTexture from '/images/uranus_ring.png';
 import neptuneTexture from '/images/neptune.jpg';
 import plutoTexture from '/images/plutomap.jpg';
+import asteroidPackUrl from './asteroids/asteroidPack.glb?url';
+import phobosModelUrl from './images/mars/phobos.glb?url';
+import deimosModelUrl from './images/mars/deimos.glb?url';
 
 // ******  SETUP  ******
 console.log("Create the scene");
@@ -508,7 +511,7 @@ const earthMoon = [{
 // Mars' moons with path to 3D models (phobos & deimos)
 const marsMoons = [
   {
-    modelPath: '/images/mars/phobos.glb',
+    modelPath: phobosModelUrl,
     scale: 0.1,
     orbitRadius: 5,
     orbitSpeed: 0.002 * settings.accelerationOrbit,
@@ -516,7 +519,7 @@ const marsMoons = [
     mesh: null
   },
   {
-    modelPath: '/images/mars/deimos.glb',
+    modelPath: deimosModelUrl,
     scale: 0.1,
     orbitRadius: 9,
     orbitSpeed: 0.0005 * settings.accelerationOrbit,
@@ -849,8 +852,8 @@ if (isMovingTowardsPlanet) {
   requestAnimationFrame(animate);
   composer.render();
 }
-loadAsteroids('/asteroids/asteroidPack.glb', 1000, 130, 160);
-loadAsteroids('/asteroids/asteroidPack.glb', 3000, 352, 370);
+loadAsteroids(asteroidPackUrl, 1000, 130, 160);
+loadAsteroids(asteroidPackUrl, 3000, 352, 370);
 animate();
 
 window.addEventListener('mousemove', onMouseMove, false);
