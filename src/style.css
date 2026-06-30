@@ -17,55 +17,67 @@ canvas { display: block; }
 
 .mission-hud {
     position: fixed;
-    top: 22px;
-    left: 24px;
-    width: min(430px, calc(100vw - 48px));
-    z-index: 5;
-    padding: 18px 20px;
-    border: 1px solid rgba(125, 231, 255, 0.42);
-    border-radius: 24px;
-    background: linear-gradient(135deg, rgba(6, 20, 54, 0.82), rgba(7, 9, 25, 0.56));
-    box-shadow: 0 0 40px rgba(62, 173, 255, 0.18), inset 0 0 26px rgba(125, 231, 255, 0.08);
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(1180px, calc(100vw - 32px));
+    min-height: 54px;
+    z-index: 7;
+    padding: 8px 14px;
+    border: 1px solid rgba(125, 231, 255, 0.30);
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(6, 20, 54, 0.68), rgba(7, 9, 25, 0.46));
+    box-shadow: 0 0 28px rgba(62, 173, 255, 0.12), inset 0 0 20px rgba(125, 231, 255, 0.05);
     backdrop-filter: blur(14px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
     pointer-events: none;
 }
 .eyebrow {
-    margin: 0 0 6px;
+    margin: 0;
     color: var(--cyan);
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    font-size: 11px;
+    font-size: 10px;
+    white-space: nowrap;
+    opacity: .82;
 }
 h1 {
     margin: 0;
     color: #fff;
-    font-size: clamp(24px, 3vw, 36px);
+    font-size: clamp(19px, 2.1vw, 27px);
     letter-spacing: 0.02em;
-    text-shadow: 0 0 24px rgba(125, 231, 255, 0.45);
+    line-height: 1;
+    white-space: nowrap;
+    text-shadow: 0 0 18px rgba(125, 231, 255, 0.38);
 }
 .subtitle {
-    margin: 10px 0 0;
-    color: rgba(255,255,255,0.82);
-    line-height: 1.7;
-    font-size: 14px;
+    margin: 0;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.2;
+    font-size: 13px;
+    white-space: nowrap;
 }
 .mission-legend {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 14px;
+    flex-wrap: nowrap;
+    gap: 6px;
+    margin: 0;
 }
 .mission-legend span,
 .mission-chip {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
+    gap: 5px;
+    padding: 5px 9px;
     border-radius: 999px;
     color: #06101d;
     background: linear-gradient(135deg, var(--cyan), #d7fbff);
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
 }
 .mission-chip.fact-chip {
     color: #1b0820;
@@ -127,7 +139,7 @@ h1 {
 .trivia-card {
     position: fixed;
     right: 24px;
-    top: 22px;
+    top: 84px;
     z-index: 5;
     width: min(340px, calc(100vw - 48px));
     padding: 18px 20px;
@@ -159,9 +171,9 @@ h1 {
     display: none;
     position: fixed;
     left: 24px;
-    top: 245px;
+    top: 84px;
     width: min(430px, calc(50vw - 38px));
-    max-height: calc(100vh - 345px);
+    max-height: calc(100vh - 185px);
     z-index: 8;
 }
 .planet-info-content {
@@ -250,16 +262,17 @@ body.is-warping .warp-lines {
 
 
 @media (min-width: 861px) and (max-width: 1180px) {
-    .mission-hud { width: 360px; }
-    .trivia-card { width: 300px; }
-    .subtitle { display: none; }
-    .planet-info { top: 185px; width: 360px; max-height: calc(100vh - 285px); }
+    .mission-hud { width: min(860px, calc(100vw - 32px)); gap: 10px; }
+    .eyebrow, .subtitle { display: none; }
+    .trivia-card { width: 300px; top: 84px; }
+    .planet-info { top: 84px; width: 360px; max-height: calc(100vh - 185px); }
 }
 
 @media (max-width: 860px) {
-    .mission-hud { top: 12px; left: 12px; padding: 15px; }
-    .subtitle, .trivia-card, .credit { display: none; }
-    .planet-info { top: 138px; left: 12px; width: calc(100vw - 24px); max-height: calc(100vh - 245px); }
+    .mission-hud { top: 10px; width: calc(100vw - 24px); min-height: 46px; padding: 7px 12px; justify-content: flex-start; overflow: hidden; }
+    .eyebrow, .subtitle, .mission-legend, .trivia-card, .credit { display: none; }
+    h1 { font-size: 20px; }
+    .planet-info { top: 68px; left: 12px; width: calc(100vw - 24px); max-height: calc(100vh - 175px); }
     .planet-dock { bottom: 12px; border-radius: 24px; justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; }
     #gui-container { display: none; }
     .fact-grid { grid-template-columns: 1fr; }

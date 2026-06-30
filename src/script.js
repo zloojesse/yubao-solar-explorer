@@ -101,9 +101,14 @@ scene.background = cubeTextureLoader.load([
 ]);
 
 // ******  CONTROLS  ******
-const gui = new dat.GUI({ autoPlace: false });
+const gui = new dat.GUI({ autoPlace: false, width: 230 });
 const customContainer = document.getElementById('gui-container');
 customContainer.appendChild(gui.domElement);
+
+function localizeGuiCloseButton() {
+  const closeButton = gui.domElement.querySelector('.close-button');
+  if (closeButton) closeButton.textContent = gui.closed ? '開啟控制' : '收合控制';
+}
 
 // ****** SETTINGS FOR INTERACTIVE CONTROLS  ******
 const settings = {
@@ -112,13 +117,15 @@ const settings = {
   sunIntensity: 1.9
 };
 
-gui.add(settings, 'accelerationOrbit', 0, 10).onChange(value => {
+gui.add(settings, 'accelerationOrbit', 0, 10).name('行星公轉速度').onChange(value => {
 });
-gui.add(settings, 'acceleration', 0, 10).onChange(value => {
+gui.add(settings, 'acceleration', 0, 10).name('星球自轉速度').onChange(value => {
 });
-gui.add(settings, 'sunIntensity', 1, 10).onChange(value => {
+gui.add(settings, 'sunIntensity', 1, 10).name('太陽亮度').onChange(value => {
   sunMat.emissiveIntensity = value;
 });
+localizeGuiCloseButton();
+gui.domElement.addEventListener('click', () => setTimeout(localizeGuiCloseButton, 0));
 
 // mouse movement
 const raycaster = new THREE.Raycaster();
