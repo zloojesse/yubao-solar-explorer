@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>魚寶的 3D 太陽系小探險</title>
+    <meta name="description" content="給魚寶玩的 3D 太陽系互動探索網站：點星球、飛過去、看繁體中文小知識。">
+  <script type="module" crossorigin src="./assets/index-DlPGfCa2.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Blqi3pzR.css">
+</head>
+<body>
+    <div class="warp-lines" aria-hidden="true"></div>
+
+    <header class="mission-hud">
+        <p class="eyebrow">Yubao Solar Explorer</p>
+        <h1>魚寶的 3D 太陽系小探險</h1>
+        <p class="subtitle">點星球飛過去，看小知識、玩問答。</p>
+        <div class="mission-legend">
+            <span>🛰 點星球</span>
+            <span>🌟 小知識</span>
+            <span>🧩 小問答</span>
+        </div>
+    </header>
+
+    <aside class="trivia-card" id="triviaCard">
+        <p class="card-label">互動小知識</p>
+        <h2>太空小問答</h2>
+        <p id="triviaQuestion">先點一顆星球，這裡會出現跟它有關的小問題。</p>
+        <div class="trivia-actions">
+            <button onclick="showTriviaAnswer()">看答案</button>
+            <button class="ghost" onclick="nextTrivia()">換一題</button>
+        </div>
+        <p id="triviaAnswer" class="trivia-answer" aria-live="polite"></p>
+    </aside>
+
+    <nav class="planet-dock" aria-label="快速選擇星球">
+        <button onclick="flyToPlanetByName('Mercury')">水星</button>
+        <button onclick="flyToPlanetByName('Venus')">金星</button>
+        <button onclick="flyToPlanetByName('Earth')">地球</button>
+        <button onclick="flyToPlanetByName('Mars')">火星</button>
+        <button onclick="flyToPlanetByName('Ceres')">穀神星</button>
+        <button onclick="flyToPlanetByName('Jupiter')">木星</button>
+        <button onclick="flyToPlanetByName('Saturn')">土星</button>
+        <button onclick="flyToPlanetByName('Uranus')">天王星</button>
+        <button onclick="flyToPlanetByName('Neptune')">海王星</button>
+        <button onclick="flyToPlanetByName('Pluto')">冥王星</button>
+        <button onclick="flyToPlanetByName('Haumea')">妊神星</button>
+        <button onclick="flyToPlanetByName('Makemake')">鳥神星</button>
+        <button onclick="flyToPlanetByName('Eris')">鬩神星</button>
+        <button onclick="flyToPlanetByName('CometHalley')">哈雷彗星</button>
+        <button class="ghost" onclick="resetExplorerView()">回到全景</button>
+    </nav>
+
+    <div id="gui-container"></div>
+
+    <div id="planetInfo" class="planet-info">
+        <div class="planet-info-content">
+            <span class="close-btn" onclick="closeInfo()">&times;</span>
+            <h2 id="planetName"></h2>
+            <div id="planetDetails"></div>
+        </div>
+    </div>
+
+    <footer class="credit">Based on N3rson/Solar-System-3D · MIT License · Customized for 信宏 / 魚寶</footer>
+</body>
+</html>
